@@ -1,27 +1,30 @@
 from graphics import Window, TKFrame, TKLabel, TKEntry, TKSlider
+from gridmanager import GridManager
 import tkinter as tk
 
-class DungeonLogic:
-    def __init__(self):
-        pass
 
-def set_rooms(number):
-    print(number)
-    return number
+def change_grid(value, grid):
+    for item in grid.w_list:
+        del item
+    for line in grid.line_ids:
+        grid.window.get_canvas().delete(line)
+    grid.size = int(value)
+    grid.w_list = grid.grid_spawn_coords()
+    grid.line_ids = grid.grid_spawn_lines()
+
 
 def main():
-    num_rooms = 0
-    win = Window(1600, 900)
+    winx = 1600
+    winy = 900
+    win = Window(winx, winy)
+    
 
-    frm1 = TKFrame(400, 900, 0, 0, win, anchor="nw")
-    entry1 = TKEntry(0, 1, text="# of Rooms", font="Helvetica", font_size = 12, frame1=frm1)
-    slider = TKSlider(0, 2, frame1=frm1, font="Helvetica", font_size = 12, text="# of Rooms")
-    entry2 = TKEntry(0, 3, text="# of Rooms", font="Helvetica", font_size = 12, frame1=frm1)
-    slider2 = TKSlider(0, 4, frame1=frm1, font="Helvetica", font_size = 12, text="# of Rooms")
-    slider3 = TKSlider(0, 5, frame1=frm1, font="Helvetica", font_size = 12, text="# of Rooms")
-    slider4 = TKSlider(0, 6, frame1=frm1, font="Helvetica", font_size = 12, text="# of Rooms")
-    slider5 = TKSlider(0, 0, frame1=frm1, font="Helvetica", font_size = 12, text="# of Rooms")
+    grid = GridManager(winwidth=winx, winheight=winy, size=432, win=win)
 
+    frm1 = TKFrame(winx/4, winy, 0, 0, win, anchor="nw")
+    #entry1 = TKEntry(0, 0, text="# of Rooms", font="Helvetica", font_size = 12, frame1=frm1)
+    size_slider = TKSlider(0, 3, frame1=frm1, font="Helvetica", font_size = 12, text="Grid Size", from_=432, to=1728, func=change_grid, grid=grid)
+    rooms_slider = TKSlider(0, 4, frame1=frm1, font="Helvetica", font_size = 12, text="# of Rooms", from_=1, to=20)
 
 
 
