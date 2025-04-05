@@ -22,7 +22,7 @@ class GridManager:
             l_list = []
             w_list.append(l_list)
             for j in range (grid_h):
-                l_list.append((i,j))
+                l_list.append([i,j,False]) #turns false when the square gets painted
         return w_list
        
     def grid_spawn_lines(self):

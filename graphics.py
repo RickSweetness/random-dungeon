@@ -71,6 +71,4 @@ class TKSlider:
 class Square:
     def __init__(self, win, x0, y0, x1, y1, colour="#f1f0ec"):
         canvas = win.get_canvas()
-        print(x0, y0, x1, y1)
         canvas.create_rectangle(x0, y0, x1, y1, fill=colour)
-        self.visited = False
