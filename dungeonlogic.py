@@ -91,11 +91,11 @@ class DungeonManager:
                 case 15 | 16 | 17 | 18 | 19 | 20:
                     length = 5
             # Randomly select a position in the grid
-            i = random.randint(0, len(self.grid.w_list) - 1 - width)
-            j = random.randint(0, len(self.grid.w_list[i]) - 1 - length)
+            i = random.randint(0, len(self.grid.w_list) - width)
+            j = random.randint(0, len(self.grid.w_list[i]) - length)
 
             # Check if the room can fit in the grid
-            if i + width >= len(self.grid.w_list) or j + length >= len(self.grid.w_list[i]):
+            if i + width >= len(self.grid.w_list) or j + length>= len(self.grid.w_list[i]):
                 continue               
             # Check if the room overlaps with existing rooms
             for x in range(width+2):

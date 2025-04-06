@@ -18,10 +18,10 @@ class GridManager:
         grid_w = int(math.sqrt(self.size/ratio))
         grid_h = int(grid_w * ratio)
         w_list = []
-        for i in range(grid_w):
+        for i in range(grid_w + 1):
             l_list = []
             w_list.append(l_list)
-            for j in range (grid_h):
+            for j in range (grid_h + 1):
                 l_list.append([i,j,False]) #turns false when the square gets painted
         return w_list
        
