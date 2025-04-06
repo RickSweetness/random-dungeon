@@ -17,7 +17,7 @@ class DungeonManager:
             self.seed = random.seed
         else:
             self.seed = seed
-        self.offset = self.grid._full_width//4
+        self.offset = self.grid._full_width/4
         mid_w_list = len(grid.w_list)//2
         mid_l_list = len(grid.w_list[mid_w_list])//2
         self.start = grid.w_list[mid_w_list][mid_l_list]
@@ -31,7 +31,7 @@ class DungeonManager:
             return
         ratio = self.grid.height/self.grid.width
         grid_w = int(math.sqrt(self.grid.size/ratio))
-        cell_size = int(self.grid.width//grid_w)
+        cell_size = self.grid.width/grid_w
         x1 = (pos[0] * cell_size) + self.offset
         y1 = (pos[1] * cell_size)
         x2 = ((pos[0] + 1) * cell_size) + self.offset
@@ -164,7 +164,7 @@ class DungeonManager:
         # Randomly select edges to add to the MST
         for edge in edges:
             if edge not in mst:
-                temp = random.randint(1, 8)
+                temp = random.randint(1, 15)
                 if temp == 1:
                     mst.append(edge)
         print("MST Edges:")

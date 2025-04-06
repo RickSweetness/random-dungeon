@@ -13,7 +13,7 @@ def change_grid(value, grid):
         del item
     for line in grid.line_ids:
         grid.window.get_canvas().delete(line)
-    grid.size = int(value)
+    grid.size = value
     grid.w_list = grid.grid_spawn_coords()
     grid.line_ids = grid.grid_spawn_lines()
 
