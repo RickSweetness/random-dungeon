@@ -21,8 +21,10 @@ class DungeonManager:
         mid_w_list = len(grid.w_list)//2
         mid_l_list = len(grid.w_list[mid_w_list])//2
         self.start = grid.w_list[mid_w_list][mid_l_list]
-        self.room_list = self.create_rooms()
-        mst = self.min_spanning_tree(self.room_list)
+        self.room_list = []
+        self.mst = []
+        self.corridors = []
+
 
     def draw_square(self, pos):
         if self.win is None:
@@ -117,6 +119,9 @@ class DungeonManager:
    
     def min_spanning_tree(self, points):
         # Create a graph from the Delaunay triangulation
+        if len(points) < 2:
+            print("Not enough points to create a minimum spanning tree.")
+            return []
         tess = Delaunay(points)
         edges = []
         for simplex in tess.simplices:
@@ -156,9 +161,6 @@ class DungeonManager:
             if min_edge is not None:
                 mst.append(min_edge)
                 visited.add(min_edge[p])
-        print("MST Edges:")
-        for edge in mst:
-            print(edge)
         # Randomly select edges to add to the MST
         for edge in edges:
             if edge not in mst:
@@ -171,6 +173,39 @@ class DungeonManager:
         return mst
 
 
+    def corridor_manager(self, edges):
+        for edge in edges:
+            self.corridor_walker(edge[0], edge[1])
+    
+    def corridor_walker(self, start, end):
+        # Get the coordinates of the start and end points
+        start_coords = self.room_list[start]
+        end_coords = self.room_list[end]
+        print("Start:", start_coords)
+        print("End:", end_coords)
+
+        while start_coords != end_coords:
+
+        # Calculate the direction to move in
+            if start_coords[0] < end_coords[0]:
+                direction = "r"
+            elif start_coords[0] > end_coords[0]:
+                direction = "l"
+            elif start_coords[1] < end_coords[1]:
+                direction = "d"
+            elif start_coords[1] > end_coords[1]:
+                direction = "u"
+
+            # Create a corridor between the two points
+            self.draw_square(start_coords)
+            if direction == "r":
+                start_coords = (start_coords[0] + 1, start_coords[1])
+            elif direction == "l":
+                start_coords = (start_coords[0] - 1, start_coords[1])
+            elif direction == "d":          
+                start_coords = (start_coords[0], start_coords[1] + 1)
+            elif direction == "u":
+                start_coords = (start_coords[0], start_coords[1] - 1)
 
 
 

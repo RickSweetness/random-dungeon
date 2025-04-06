@@ -57,7 +57,10 @@ class TKEntry:
 class TKSlider:
     def __init__(self, x, y, frame1, font, font_size, text, from_=0, to=10, colour="#f1f0ec", font_colour="#2a2927", func=None, grid=None):
         frame1_root = frame1.get_root()
-        self.__root = tk.Scale(frame1_root, font=(font, font_size), bg=colour, fg=font_colour, from_=from_, to=to, orient="horizontal", length=200, command=self.ret)
+        if func is None:
+            self.__root = tk.Scale(frame1_root, font=(font, font_size), bg=colour, fg=font_colour, from_=from_, to=to, orient="horizontal", length=200)
+        else:
+            self.__root = tk.Scale(frame1_root, font=(font, font_size), bg=colour, fg=font_colour, from_=from_, to=to, orient="horizontal", length=200, command=self.ret)
         self.__lbl = TKLabel(x=x, y=y, text=text, font=(font, font_size), frame=frame1)
         self.__root.grid(column=x+1, row=y, sticky="ew", padx=5, pady=5)
         self.grid = grid
@@ -66,6 +69,9 @@ class TKSlider:
     def ret(self, value):
         value = int(value)
         return self.func(value, self.grid)
+    
+    def get(self):
+        return int(self.__root.get())
 
             
 class Square:
