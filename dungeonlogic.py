@@ -6,9 +6,10 @@ import math
 import time
 
 class DungeonManager:
-    def __init__(self, grid, win, seed=None):
+    def __init__(self, grid, win, num_rooms=5, seed=None):
         self.grid = grid
         self.win = win
+        self.num_rooms = num_rooms
         if seed == None:
             self.seed = random.seed
         else:
@@ -30,6 +31,7 @@ class DungeonManager:
         y2 = ((pos[1] + 1) * cell_size)
         square = Square(self.win, x1, y1, x2, y2)
         self.grid.w_list[pos[0]][pos[1]][2] = True #change to True to show the square is being used
+        print(self.grid.w_list[pos[0]][pos[1]])
         self._animate()
 
     def _animate(self):
@@ -103,53 +105,117 @@ class DungeonManager:
             coord_list = [coord for coord in coord_list if coord != (i, j) and coord not in [(i+1, j), (i-1, j), (i, j+1), (i, j-1)]]
         return coord_list
     
-    def create_corridor(self, i, j, directions, attempts=0):
-        if attempts >= 30:
-            return 
-        start = self.grid.w_list[i][j]
-        if len(directions) == 0 and False in directions:
-            directions = self.choose_direction(start, r=True)
-        if len(directions) == 0 and True in directions:
-            directions = self.choose_direction(start)
-        roll = random.randrange(1, 21)
-        if roll >= 1:
-            if len(directions) > 0:
-                d = directions.pop(random.randrange(0, len(directions)))
-                if d == "r":
-                    print("trying right")
-                    if self.are_squares_used(self.coord_lister(i, j, 4, "r", True)):
-                        return self.create_corridor(i, j, directions, attempts+1)
-                    else:
-                        coords = self.coord_lister(i, j, 4, "r")
-                        for coord in coords:
-                            self.draw_square(self.grid.w_list[coord[0]][coord[1]])
-                    return self.create_corridor(i+4, j, self.choose_direction(self.grid.w_list[i+4][j]))
-                if d == "d":
-                    print("trying down")
-                    if self.are_squares_used(self.coord_lister(i, j, 4, "d", True)):
-                        return self.create_corridor(i, j, directions, attempts+1)
-                    else:
-                        coords = self.coord_lister(i, j, 4, "d")
-                        for coord in coords:
-                            self.draw_square(self.grid.w_list[coord[0]][coord[1]])
-                    return self.create_corridor(i, j+4, self.choose_direction(self.grid.w_list[i][j+4]))
-                if d == "u":
-                    print("trying up")
-                    if self.are_squares_used(self.coord_lister(i, j, 4, "u", True)):
-                        return self.create_corridor(i, j, directions, attempts+1)
-                    else:
-                        coords = self.coord_lister(i, j, 4, "u")
-                        for coord in coords:
-                            self.draw_square(self.grid.w_list[coord[0]][coord[1]])
-                    return self.create_corridor(i, j-4, self.choose_direction(self.grid.w_list[i][j-4]))
-                if d == "l":
-                    print("trying left")
-                    if self.are_squares_used(self.coord_lister(i, j, 4, "l", True)):
-                        return self.create_corridor(i, j, directions, attempts+1)
-                    else:
-                        coords = self.coord_lister(i, j, 4, "l")
-                        for coord in coords:
-                            self.draw_square(self.grid.w_list[coord[0]][coord[1]])
-                    return self.create_corridor(i-4, j, self.choose_direction(self.grid.w_list[i-4][j]))
+    def create_rooms(self):
+        # Create rooms in the grid
+        rooms = 0
+        attempts = 0
+        while rooms < self.num_rooms:
+            if attempts >= 100:
+                print("Too many attempts to place rooms.")
+                break
+            attempts += 1
+            blocked = False
+            # Randomly select a position in the grid
+            i = random.randint(0, len(self.grid.w_list) - 1)
+            j = random.randint(0, len(self.grid.w_list[i]) - 1)
+
+            # Check if the position is already occupied
+            if self.grid.w_list[i][j][2]:
+                continue
+            # Create a random size room at this position
+            size_roll = random.randint(1, 20)
+            match size_roll:
+                case 1 | 2 | 3:
+                    size = 2
+                case 4 | 5 | 6 | 7 | 8 | 9 | 10:
+                    size = 3
+                case 11 | 12 | 13 | 14 | 15 | 16 | 17:
+                    size = 4
+                case 18 | 19 | 20:
+                    size = 5
+            # Check if the room can fit in the grid
+            if i + size + 1 >= len(self.grid.w_list) or j + size + 1 >= len(self.grid.w_list[i]) or i - size - 1 < 0  or j - size - 1 < 0:
+                continue               
+            # Check if the room overlaps with existing rooms
+            for x in range(size+2):
+                for y in range(size+2):
+                    if self.grid.w_list[i+x-1][j+y-1][2]:
+                        blocked = True
+                        print("Room blocked")
+            if not blocked:
+                # Draw the room
+                for x in range(size):
+                    for y in range(size):
+                        self.draw_square((i+x, j+y))
+                rooms += 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # def create_corridor(self, i, j, directions, attempts=0):
+    #     if attempts >= 30:
+    #         return 
+    #     start = self.grid.w_list[i][j]
+    #     if len(directions) == 0 and False in directions:
+    #         directions = self.choose_direction(start, r=True)
+    #     if len(directions) == 0 and True in directions:
+    #         directions = self.choose_direction(start)
+    #     roll = random.randrange(1, 21)
+    #     if roll >= 1:
+    #         if len(directions) > 0:
+    #             d = directions.pop(random.randrange(0, len(directions)))
+    #             if d == "r":
+    #                 print("trying right")
+    #                 if self.are_squares_used(self.coord_lister(i, j, 4, "r", True)):
+    #                     return self.create_corridor(i, j, directions, attempts+1)
+    #                 else:
+    #                     coords = self.coord_lister(i, j, 4, "r")
+    #                     for coord in coords:
+    #                         self.draw_square(self.grid.w_list[coord[0]][coord[1]])
+    #                 return self.create_corridor(i+4, j, self.choose_direction(self.grid.w_list[i+4][j]))
+    #             if d == "d":
+    #                 print("trying down")
+    #                 if self.are_squares_used(self.coord_lister(i, j, 4, "d", True)):
+    #                     return self.create_corridor(i, j, directions, attempts+1)
+    #                 else:
+    #                     coords = self.coord_lister(i, j, 4, "d")
+    #                     for coord in coords:
+    #                         self.draw_square(self.grid.w_list[coord[0]][coord[1]])
+    #                 return self.create_corridor(i, j+4, self.choose_direction(self.grid.w_list[i][j+4]))
+    #             if d == "u":
+    #                 print("trying up")
+    #                 if self.are_squares_used(self.coord_lister(i, j, 4, "u", True)):
+    #                     return self.create_corridor(i, j, directions, attempts+1)
+    #                 else:
+    #                     coords = self.coord_lister(i, j, 4, "u")
+    #                     for coord in coords:
+    #                         self.draw_square(self.grid.w_list[coord[0]][coord[1]])
+    #                 return self.create_corridor(i, j-4, self.choose_direction(self.grid.w_list[i][j-4]))
+    #             if d == "l":
+    #                 print("trying left")
+    #                 if self.are_squares_used(self.coord_lister(i, j, 4, "l", True)):
+    #                     return self.create_corridor(i, j, directions, attempts+1)
+    #                 else:
+    #                     coords = self.coord_lister(i, j, 4, "l")
+    #                     for coord in coords:
+    #                         self.draw_square(self.grid.w_list[coord[0]][coord[1]])
+    #                 return self.create_corridor(i-4, j, self.choose_direction(self.grid.w_list[i-4][j]))
 
 

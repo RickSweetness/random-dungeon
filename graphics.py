@@ -72,3 +72,8 @@ class Square:
     def __init__(self, win, x0, y0, x1, y1, colour="#f1f0ec"):
         canvas = win.get_canvas()
         canvas.create_rectangle(x0, y0, x1, y1, fill=colour)
+
+class Wall:
+    def __init__(self, win, x0, y0, x1, y1, colour="#353432"):
+        canvas = win.get_canvas()
+        canvas.create_rectangle(x0, y0, x1, y1, fill=colour)

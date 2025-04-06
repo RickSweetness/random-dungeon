@@ -5,6 +5,7 @@ import tkinter as tk
 
 
 def change_grid(value, grid):
+    value *= 432
     for item in grid.w_list:
         del item
     for line in grid.line_ids:
@@ -20,15 +21,15 @@ def main():
     win = Window(winx, winy)
     
 
-    grid = GridManager(winwidth=winx, winheight=winy, size=500, win=win)
+    grid = GridManager(winwidth=winx, winheight=winy, size=432, win=win)
 
     frm1 = TKFrame(winx/4, winy, 0, 0, win, anchor="nw")
     #entry1 = TKEntry(0, 0, text="# of Rooms", font="Helvetica", font_size = 12, frame1=frm1)
-    size_slider = TKSlider(0, 3, frame1=frm1, font="Helvetica", font_size = 12, text="Grid Size", from_=400, to=6000, func=change_grid, grid=grid)
+    size_slider = TKSlider(0, 3, frame1=frm1, font="Helvetica", font_size = 12, text="Grid Size", from_=1, to=15, func=change_grid, grid=grid)
     rooms_slider = TKSlider(0, 4, frame1=frm1, font="Helvetica", font_size = 12, text="# of Rooms", from_=1, to=20)
 
-    dungo = DungeonManager(grid, win, 0)
-    dungo.create_corridor(1,1, dungo.choose_direction(grid.w_list[1][1]))
+    dungo = DungeonManager(grid, win, num_rooms=5, seed=0)
+    dungo.create_rooms()
 
 
 
