@@ -28,8 +28,7 @@ def main():
     size_slider = TKSlider(0, 3, frame1=frm1, font="Helvetica", font_size = 12, text="Grid Size", from_=1, to=15, func=change_grid, grid=grid)
     rooms_slider = TKSlider(0, 4, frame1=frm1, font="Helvetica", font_size = 12, text="# of Rooms", from_=1, to=20)
 
-    dungo = DungeonManager(grid, win, num_rooms=5, seed=0)
-    dungo.create_rooms()
+    dungo = DungeonManager(grid, win, num_rooms=10, seed=0)
 
 
 

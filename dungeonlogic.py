@@ -18,6 +18,7 @@ class DungeonManager:
         mid_w_list = len(grid.w_list)//2
         mid_l_list = len(grid.w_list[mid_w_list])//2
         self.start = grid.w_list[mid_w_list][mid_l_list]
+        self.room_list = self.create_rooms()
 
     def draw_square(self, pos):
         if self.win is None:
@@ -31,7 +32,6 @@ class DungeonManager:
         y2 = ((pos[1] + 1) * cell_size)
         square = Square(self.win, x1, y1, x2, y2)
         self.grid.w_list[pos[0]][pos[1]][2] = True #change to True to show the square is being used
-        print(self.grid.w_list[pos[0]][pos[1]])
         self._animate()
 
     def _animate(self):
@@ -109,47 +109,66 @@ class DungeonManager:
         # Create rooms in the grid
         rooms = 0
         attempts = 0
+        room_list = []
+        blocked_rooms = 0
         while rooms < self.num_rooms:
-            if attempts >= 100:
+            if attempts >= 10000:
                 print("Too many attempts to place rooms.")
                 break
             attempts += 1
+            print(f"Attempting to place room {rooms + 1} of {self.num_rooms}. Attempts: {attempts}")
             blocked = False
+            # Create a random size room 
+            width_roll = random.randint(1, 20)
+            length_roll = random.randint(1, 20)
+            match width_roll:
+                case 1:
+                    width = 2
+                case 2 | 3 | 4 | 5 | 6:
+                    width = 3
+                case 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14:
+                    width = 4
+                case 15 | 16 | 17 | 18 | 19 | 20:
+                    width = 5
+            match length_roll:
+                case 1:
+                    length = 2
+                case 2 | 3 | 4 | 5 | 6:
+                    length = 3
+                case 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14:
+                    length = 4
+                case 15 | 16 | 17 | 18 | 19 | 20:
+                    length = 5
             # Randomly select a position in the grid
-            i = random.randint(0, len(self.grid.w_list) - 1)
-            j = random.randint(0, len(self.grid.w_list[i]) - 1)
+            i = random.randint(0, len(self.grid.w_list) - 1 - width)
+            j = random.randint(0, len(self.grid.w_list[i]) - 1 - length)
 
-            # Check if the position is already occupied
-            if self.grid.w_list[i][j][2]:
-                continue
-            # Create a random size room at this position
-            size_roll = random.randint(1, 20)
-            match size_roll:
-                case 1 | 2 | 3:
-                    size = 2
-                case 4 | 5 | 6 | 7 | 8 | 9 | 10:
-                    size = 3
-                case 11 | 12 | 13 | 14 | 15 | 16 | 17:
-                    size = 4
-                case 18 | 19 | 20:
-                    size = 5
             # Check if the room can fit in the grid
-            if i + size + 1 >= len(self.grid.w_list) or j + size + 1 >= len(self.grid.w_list[i]) or i - size - 1 < 0  or j - size - 1 < 0:
+            if i + width >= len(self.grid.w_list) or j + length >= len(self.grid.w_list[i]):
                 continue               
             # Check if the room overlaps with existing rooms
-            for x in range(size+2):
-                for y in range(size+2):
+            for x in range(width+2):
+                for y in range(length+2):
                     if self.grid.w_list[i+x-1][j+y-1][2]:
                         blocked = True
-                        print("Room blocked")
+            if blocked:
+                # If the room is blocked, increment the blocked_rooms counter
+                # and continue to the next attempt
+                blocked_rooms += 1
+                print(f"Rooms blocked: {blocked_rooms}")
             if not blocked:
                 # Draw the room
-                for x in range(size):
-                    for y in range(size):
+                for x in range(width):
+                    for y in range(length):
                         self.draw_square((i+x, j+y))
                 rooms += 1
+                room_list.append(((i + width // 2), (j + length // 2), width, length))
+        print(f"Placed {rooms} rooms with {blocked_rooms} blocked attempts.")
+        return room_list
 
-
+    def delauney_triangulation(self):
+        # Implement Delauney triangulation algorithm here
+        pass
 
 
 
