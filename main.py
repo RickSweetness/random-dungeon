@@ -8,6 +8,10 @@ dungeon_exists = False
 
 
 def change_grid(value, grid):
+    global dungeon_exists
+    if dungeon_exists:
+        print("Dungeon already exists")
+        return
     value *= 432
     for item in grid.w_list:
         del item

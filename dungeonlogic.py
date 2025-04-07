@@ -72,6 +72,7 @@ class DungeonManager:
             # Create a random size room 
             width_roll = random.randint(1, 20)
             length_roll = random.randint(1, 20)
+            shape_roll = random.randint(1, 10)
             match width_roll:
                 case 1:
                     width = 2
@@ -90,6 +91,14 @@ class DungeonManager:
                     length = 4
                 case 15 | 16 | 17 | 18 | 19 | 20:
                     length = 5
+            # Create a random shape for the room
+            match shape_roll:
+                case 1:
+                    shape = "triangle"
+                case 2 | 3:
+                    shape = "octagon"
+                case 4 | 5 | 6 | 7 | 8 | 9 | 10:
+                    shape = "rectangle"
             # Randomly select a position in the grid
             i = random.randint(0, len(self.grid.w_list) - width)
             j = random.randint(0, len(self.grid.w_list[i]) - length)
@@ -110,9 +119,16 @@ class DungeonManager:
                 # Draw the room
                 for x in range(width):
                     for y in range(length):
-                        self.draw_square((i+x, j+y))
+                        # if shape == "rectangle":
+                        #     self.draw_square((i+x, j+y))
+                        # elif shape == "triangle":
+                        #     if x <= y:
+                        #         self.draw_square((i+x, j+y))
+                        # elif shape == "octagon":
+                        #     if (x == 0 and x == width - 1) or (y == 0 and y == length - 1) or (x == y):
+                            self.draw_square((i+x, j+y))
                 rooms += 1
-                room_list.append(((i + width // 2), (j + length // 2)))
+                room_list.append(((i + (width // 2)), (j + (length // 2))))
         sorted_rooms = sorted(room_list, key=lambda p: (p[0], p[1]))
         return sorted_rooms
 
